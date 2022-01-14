@@ -38,3 +38,6 @@ CREATE TABLE book (
 -- Add indexes
 CREATE INDEX active_users ON "user" (id) WHERE is_active = TRUE;
 CREATE INDEX active_books ON book (title) WHERE status = 1;
+
+insert into user (username, is_active, is_admin, email, password, first_name, last_name) 
+    values ('roeti', 'true', 'true', 'e.roulet@gmx.net', 'Test123', 'Etienne', 'Roulet');

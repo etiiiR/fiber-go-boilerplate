@@ -43,6 +43,7 @@ definitions:
   model.Book:
     properties:
       author:
+        maxLength: 255
         type: string
       created_at:
         type: string
@@ -55,6 +56,7 @@ definitions:
       status:
         type: integer
       title:
+        maxLength: 255
         type: string
       updated_at:
         type: string
@@ -70,18 +72,25 @@ definitions:
   model.CreateUser:
     properties:
       email:
+        maxLength: 150
         type: string
       first_name:
+        maxLength: 100
         type: string
       is_active:
         type: boolean
       is_admin:
         type: boolean
       last_name:
+        maxLength: 100
         type: string
       password:
+        maxLength: 100
+        minLength: 10
         type: string
       username:
+        maxLength: 50
+        minLength: 5
         type: string
     required:
     - email
@@ -97,17 +106,21 @@ definitions:
       picture:
         type: string
       rating:
+        maximum: 10
+        minimum: 1
         type: integer
     type: object
   model.UpdateUser:
     properties:
       first_name:
+        maxLength: 100
         type: string
       is_active:
         type: boolean
       is_admin:
         type: boolean
       last_name:
+        maxLength: 100
         type: string
     required:
     - first_name
@@ -305,6 +318,44 @@ paths:
       summary: update a book
       tags:
       - Book
+  /v1/signup/:
+    post:
+      consumes:
+      - application/json
+      description: Signup a new User.
+      parameters:
+      - description: Create new user
+        in: body
+        name: createuser
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ok
+          schema:
+            $ref: '#/definitions/dto.User'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "401":
+          description: Error
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "409":
+          description: Error
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: Error
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: create a new user
+      tags:
+      - User
   /v1/token/new:
     post:
       consumes:

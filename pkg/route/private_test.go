@@ -25,7 +25,7 @@ var bookIDS [10]string
 
 func TestPrivateUserRoutes(t *testing.T) {
 	setUpUser()
-	defer tearDownUser()
+	//defer tearDownUser()
 
 	app := fiber.New()
 	PrivateRoutes(app)

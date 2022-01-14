@@ -138,6 +138,70 @@ func CreateUser(c *fiber.Ctx) error {
 	})
 }
 
+// Signup func for creates a new user.
+// @Description Signup a new User.
+// @Summary create a new user
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param createuser body model.CreateUser true "Create new user"
+// @Failure 400,401,409,500 {object} ErrorResponse status "Error"
+// @Success 200 {object} dto.User status "Ok"
+// @Router /v1/signup/ [post]
+func Signup(c *fiber.Ctx) error {
+	// Create new Book struct
+	user := &model.CreateUserNonAdmin{}
+
+	if err := c.BodyParser(user); err != nil {
+		// Return status 400 and error message.
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"msg": err.Error(),
+		})
+	}
+
+	// Create a new validator for a User model.
+	validate := validator.NewValidator()
+	if err := validate.Struct(user); err != nil {
+		// Return, if some fields are not valid.
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"msg":    "invalid input found",
+			"errors": validator.ValidatorErrors(err),
+		})
+	}
+
+	userRepo := repo.NewUserRepo(database.GetDB())
+	// check user already exists
+	exists, err := userRepo.Exists(user.UserName, user.Email)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"msg": err.Error(),
+		})
+	}
+	if exists {
+		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+			"msg": "user with this username or email already exists",
+		})
+	}
+
+	user.Password, _ = GeneratePasswordHash([]byte(user.Password))
+	if err := userRepo.Create(user); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"msg": err.Error(),
+		})
+	}
+
+	dbUser, err := userRepo.GetByUsername(user.UserName)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"msg": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"user": dto.ToUser(dbUser),
+	})
+}
+
 // UpdateUser func update a user.
 // @Description first_name, last_name, is_active, is_admin only
 // @Summary update a user

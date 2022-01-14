@@ -294,6 +294,64 @@
                 }
             }
         },
+        "/v1/signup/": {
+            "post": {
+                "description": "Signup a new User.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "create a new user",
+                "parameters": [
+                    {
+                        "description": "Create new user",
+                        "name": "createuser",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/dto.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/token/new": {
             "post": {
                 "description": "Create a new access token.",
@@ -745,7 +803,8 @@
             ],
             "properties": {
                 "author": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255
                 },
                 "created_at": {
                     "type": "string"
@@ -763,7 +822,8 @@
                     "type": "integer"
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255
                 },
                 "updated_at": {
                     "type": "string"
@@ -784,10 +844,12 @@
             ],
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 150
                 },
                 "first_name": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 100
                 },
                 "is_active": {
                     "type": "boolean"
@@ -796,13 +858,18 @@
                     "type": "boolean"
                 },
                 "last_name": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 100
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 10
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 5
                 }
             }
         },
@@ -816,7 +883,9 @@
                     "type": "string"
                 },
                 "rating": {
-                    "type": "integer"
+                    "type": "integer",
+                    "maximum": 10,
+                    "minimum": 1
                 }
             }
         },
@@ -828,7 +897,8 @@
             ],
             "properties": {
                 "first_name": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 100
                 },
                 "is_active": {
                     "type": "boolean"
@@ -837,7 +907,8 @@
                     "type": "boolean"
                 },
                 "last_name": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 100
                 }
             }
         }
